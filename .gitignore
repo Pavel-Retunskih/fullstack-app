@@ -1,0 +1,21 @@
+# Общие файлы для всех проектов
+node_modules/
+dist/
+build/
+.env
+*.log
+.DS_Store
+.idea/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+
+/client/.env.local
+/client/build/
+/client/coverage/
+
+
+/server/.env
+/server/dist/
+/server/coverage/
