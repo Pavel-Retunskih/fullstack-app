@@ -1,4 +1,5 @@
 import {createApi, fetchBaseQuery} from "@reduxjs/toolkit/query/react";
+import {User} from "../../../entities/user/model/type.ts";
 
 export const usersApi = createApi({
   baseQuery: fetchBaseQuery({
@@ -6,7 +7,7 @@ export const usersApi = createApi({
 
   }),
   endpoints: (build) => ({
-    getAllUsers: build.query<any, void>({
+    getAllUsers: build.query<{ data: User[] }, void>({
       query: () => ({url: 'users'})
     }),
     getUserById: build.query({

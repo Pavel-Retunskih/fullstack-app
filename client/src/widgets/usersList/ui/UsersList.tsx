@@ -6,7 +6,7 @@ export function UsersList() {
   console.log(data)
   return <div>
     <div>
-      {isSuccess && data?.map((user: any) => (
+      {isSuccess && data.data.map((user: any) => (
           <div key={user.id} className={'flex '}>
             <ul>
               <li>{user.firstName}</li>

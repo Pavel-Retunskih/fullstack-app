@@ -19,3 +19,4 @@ yarn-error.log*
 /server/.env
 /server/dist/
 /server/coverage/
+server/src/uploads/temp/

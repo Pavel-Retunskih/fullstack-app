@@ -18,6 +18,7 @@ import { updateUserDTO } from './dto/update-user.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import * as fs from 'fs/promises';
+import * as path from 'node:path';
 
 @Controller('users')
 export class UsersController {
@@ -83,9 +84,10 @@ export class UsersController {
   @UseInterceptors(
     FileInterceptor('photo', {
       storage: diskStorage({
-        destination: './uploads/temp',
+        destination: './src/uploads/temp',
         filename: (req, file, cb) => {
-          const uniqueName = `temp_${Date.now()}_${Math.random().toString(36).slice(2)}`;
+          const ext = path.extname(file.originalname);
+          const uniqueName = `temp_${Date.now()}_${Math.random().toString(36).slice(2)}_${ext}`;
           cb(null, uniqueName);
         },
       }),
