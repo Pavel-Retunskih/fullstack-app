@@ -80,6 +80,7 @@ export class UsersController {
     return this.usersService.findAll(page, limit);
   }
 
+  //todo: добавить проверку
   @Post('upload-temp-photo')
   @UseInterceptors(
     FileInterceptor('photo', {
