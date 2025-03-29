@@ -1,4 +1,10 @@
-import { Entity, PrimaryGeneratedColumn, Column, UpdateDateColumn, CreateDateColumn } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  UpdateDateColumn,
+  CreateDateColumn,
+} from 'typeorm';
 
 @Entity('users')
 export class User {
@@ -18,7 +24,7 @@ export class User {
   weight: number;
 
   @Column({ length: 10 })
-  gender: 'male' | 'female' | 'other';
+  gender: 'male' | 'female';
 
   @Column({ length: 100 })
   residence: string;
