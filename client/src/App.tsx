@@ -1,19 +1,12 @@
-import {useEffect} from 'react'
-
 import './App.css'
+import {UsersList} from "./widgets/usersList/ui/UsersList.tsx";
 
 function App() {
 
-useEffect(() => {
-  fetch('http://localhost:3000/users').then(res => res.json()).then(data => console.log(data))
-},[])
   return (
-    <>
       <div>
-
+        <UsersList/>
       </div>
-
-    </>
   )
 }
 
