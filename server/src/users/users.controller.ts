@@ -35,7 +35,6 @@ export class UsersController {
     tempPhotoId?: number,
   ): Promise<User> {
     let photoData: Buffer;
-    let photoMimeType: string;
     if (tempPhotoId) {
       const tempPhotoPath = `./uploads/temp/${tempPhotoId}`;
       try {
