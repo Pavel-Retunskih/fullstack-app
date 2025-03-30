@@ -23,14 +23,21 @@ export class UsersService {
     return { data, count };
   }
 
-  async findOne(id: number): Promise<User> {
+  async findOne(userId: number): Promise<User> {
     const user = await this.usersRepository.findOne({
-      where: { id },
+      where: { id: userId },
     });
     if (!user) {
       throw new NotFoundException(
-        `User with id ${id} not found, check and try again.`,
+        `User with id ${userId} not found, check and try again.`,
       );
+    }
+
+    if (user.photo && !(user.photo instanceof Buffer)) {
+      // Если photo - это объект { type: "Buffer", data: number[] }
+      if (typeof user.photo === 'object' && 'data' in user.photo) {
+        user.photo = Buffer.from((user.photo as any).data);
+      }
     }
     return user;
   }

@@ -10,7 +10,7 @@ export const createUserApi = createApi({
   endpoints: (build) => ({
     createUser: build.mutation<any, QueryArgUserRequest>({
       query: ({gender, height, firstName, lastName, weight, residence, tempPhotoId}) => ({
-        url: 'users/create',
+        url: `users/create?tempPhotoId=${tempPhotoId}`,
         method: 'POST',
         body: {
           firstName,
@@ -18,8 +18,7 @@ export const createUserApi = createApi({
           weight,
           residence,
           height,
-          gender,
-          tempPhotoId
+          gender
         }
       })
     }),

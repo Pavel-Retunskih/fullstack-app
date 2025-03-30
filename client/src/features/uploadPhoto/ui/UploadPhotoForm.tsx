@@ -8,12 +8,11 @@ type Input = {
 
 export function UploadPhotoForm({callback}: { callback: (tempPhotoId: string) => void }) {
   const [uploadPhoto, {data: response, isSuccess}] = useUploadTempPhotoMutation();
-
   const {register, handleSubmit, watch} = useForm<Input>();
+
   const photo = watch('photo');
   const onSubmit: SubmitHandler<Input> = async (data) => {
 
-    console.log('Selected file:', data.photo[0]);
     const formData = new FormData();
     formData.append('photo', data.photo[0]);
 

@@ -1,7 +1,11 @@
 import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
 import { Type } from 'class-transformer';
 
-export class createUserDto {
+export class UserResponseDto {
+  @IsNotEmpty()
+  @IsNumber()
+  id: number;
+
   @IsNotEmpty()
   @IsString()
   firstName: string;
@@ -27,9 +31,6 @@ export class createUserDto {
   residence: string;
 
   @IsNotEmpty()
-  @Type(() => Buffer)
-  photo: Buffer;
-
-  @IsNotEmpty()
-  photoMimeType: string;
+  @IsString()
+  photoUrl: string;
 }

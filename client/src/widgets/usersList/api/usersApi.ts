@@ -7,9 +7,17 @@ export const usersApi = createApi({
 
   }),
   endpoints: (build) => ({
-    getAllUsers: build.query<{ data: User[] }, void>({
-      query: () => ({url: 'users'})
+
+    getUsers: build.query<{ data: User[]; count: number }, { page: number; limit: number }>({
+      query: ({page, limit}) => `users?page=${page}&limit=${limit}`,
+      merge: (currentCache, newItems) => {
+        currentCache.data.push(...newItems.data);
+      },
+      forceRefetch({currentArg, previousArg}) {
+        return currentArg?.page !== previousArg?.page;
+      },
     }),
+
     getUserById: build.query({
       query: (id: string) => ({
         url: `users/${id}`
@@ -18,4 +26,4 @@ export const usersApi = createApi({
   })
 })
 
-export const {useGetAllUsersQuery, useGetUserByIdQuery} = usersApi
+export const {useGetUsersQuery, useGetUserByIdQuery} = usersApi
