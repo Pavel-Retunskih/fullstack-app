@@ -1,14 +1,22 @@
 import './App.css'
-import {UsersList} from "./widgets/usersList/ui/UsersList.tsx";
-import {CreateUserForm} from "./features/createUser/ui/CreateUserForm.tsx";
+
+import {BrowserRouter, Route, Routes} from "react-router";
+import {UsersPage} from "./pages/usersPage/ui/UsersPage.tsx";
+import {CreateUserPage} from "./pages/creacteUser/ui/CreateUserPage.tsx";
 
 function App() {
 
   return (
-      <div>
-        <CreateUserForm/>
-        <UsersList/>
-      </div>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<UsersPage/>}/>
+          <Route path={'/create-user/'} element={<CreateUserPage/>}/>
+        </Routes>
+
+
+      </BrowserRouter>
+
+
   )
 }
 

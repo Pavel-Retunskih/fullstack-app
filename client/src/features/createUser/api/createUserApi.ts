@@ -1,29 +1,29 @@
 import {createApi, fetchBaseQuery} from "@reduxjs/toolkit/query/react";
 import {User} from "../../../entities/user/model/type.ts";
 
-type QueryArgUserRequest = Omit<User, 'photo'>
+type QueryArgUserRequest = Omit<User, 'photo'> & { tempPhotoId: string | null };
 export const createUserApi = createApi({
+  reducerPath: 'createUserApi',
   baseQuery: fetchBaseQuery({
     baseUrl: 'http://localhost:3000',
   }),
   endpoints: (build) => ({
     createUser: build.mutation<any, QueryArgUserRequest>({
-      query: ({gender, height, firstName, lastName, weight, residence}) => ({
+      query: ({gender, height, firstName, lastName, weight, residence, tempPhotoId}) => ({
         url: 'users/create',
+        method: 'POST',
         body: {
           firstName,
           lastName,
           weight,
           residence,
           height,
-          gender
+          gender,
+          tempPhotoId
         }
       })
     }),
-    // uploadTempPhoto: build.mutation<any, any>({
-    //   query:()=>({
-    //     url:'users/upload-temp-photo'
-    //   })
-    // })
   })
 })
+
+export const {useCreateUserMutation} = createUserApi

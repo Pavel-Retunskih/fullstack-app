@@ -25,18 +25,18 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Get(':id')
-  findById(@Param('id') id: string): Promise<User> {
-    return this.usersService.findOne(+id);
+  async findById(@Param('id') id: string): Promise<User> {
+    return await this.usersService.findOne(+id);
   }
 
   @Post('create')
   async createUser(
     @Body() createUserDto: createUserDto,
-    tempPhotoId?: number,
+    tempPhotoId?: string,
   ): Promise<User> {
     let photoData: Buffer;
     if (tempPhotoId) {
-      const tempPhotoPath = `./uploads/temp/${tempPhotoId}`;
+      const tempPhotoPath = `./src/uploads/temp/${tempPhotoId}`;
       try {
         photoData = await fs.readFile(tempPhotoPath);
 
@@ -46,10 +46,10 @@ export class UsersController {
       }
     } else {
       try {
-        const defaultPhotoPath = `./uploads/defaultAvatar/default-${createUserDto.gender}`;
+        const defaultPhotoPath = `./src/uploads/defaultAvatar/default-${createUserDto.gender}.jpg`;
         photoData = await fs.readFile(defaultPhotoPath);
       } catch (err) {
-        throw new BadRequestException('Some error occurred');
+        throw new BadRequestException(`Some error occurred ${err}`);
       }
     }
     return this.usersService.create({
