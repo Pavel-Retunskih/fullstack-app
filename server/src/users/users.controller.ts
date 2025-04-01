@@ -12,24 +12,25 @@ import {
   BadRequestException,
   Res,
   NotFoundException,
+  HttpStatus,
 } from '@nestjs/common';
 import { Response } from 'express';
 import { UsersService } from './users.service';
 import { User } from './entities/user.entity';
-import { createUserDto } from './dto/create-user.dto';
-import { updateUserDTO } from './dto/update-user.dto';
+import { RegistrationUserDto } from './dto/registration-user.dto';
+import { UpdateUserDTO } from './dto/update-user.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import * as fs from 'fs/promises';
-import * as path from 'node:path';
 import mime from 'mime-types';
-import { UserResponseDto } from './dto/responce-user.dto';
+import * as path from 'node:path';
+import { ResponseUserDto } from './dto/responce-user.dto';
 
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  private transformUserResponse(user: User): UserResponseDto {
+  private transformUserResponse(user: User): ResponseUserDto {
     return {
       id: user.id,
       firstName: user.firstName,
@@ -38,34 +39,23 @@ export class UsersController {
       weight: user.weight,
       gender: user.gender,
       residence: user.residence,
-      photoUrl: `http://localhost:3000/users/${user.id}/photo`, // Генерируем URL
+      photoUrl: `http://localhost:3000/users/${user.id}/photo`,
     };
   }
 
   @Get(':id')
-  async findById(@Param('id') id: string): Promise<User> {
-    return await this.usersService.findOne(+id);
+  async findById(@Param('id') id: string): Promise<ResponseUserDto> {
+    const user = await this.usersService.findOne(+id);
+    return this.transformUserResponse(user);
   }
 
   @Post('create')
   async createUser(
-    @Body() createUserDto: createUserDto,
+    @Body() createUserDto: RegistrationUserDto,
     @Query('tempPhotoId') tempPhotoId: string | null,
-  ): Promise<UserResponseDto> {
-    const requiredFields = [
-      'firstName',
-      'lastName',
-      'height',
-      'weight',
-      'gender',
-      'residence',
-    ];
-    for (const field of requiredFields) {
-      if (createUserDto[field] === undefined || createUserDto[field] === null) {
-        throw new BadRequestException(`Field ${field} is required`);
-      }
-    }
+  ): Promise<ResponseUserDto> {
     let photoData: Buffer;
+    let photoMimeType: string;
     if (tempPhotoId && tempPhotoId !== 'null' && tempPhotoId !== 'undefined') {
       const tempPhotoPath = path.join('./src/uploads/temp', tempPhotoId);
       try {
@@ -90,17 +80,19 @@ export class UsersController {
       ...createUserDto,
       photo: photoData,
     });
+
     return this.transformUserResponse(newUser);
   }
 
-  @Patch(':id')
-  updateUser(@Param('id') id: string, @Body() updateUserDto: updateUserDTO) {
+  @Patch('update/:id')
+  updateUser(@Param('id') id: string, @Body() updateUserDto: UpdateUserDTO) {
     return this.usersService.update(+id, updateUserDto);
   }
 
-  @Delete(':id')
-  deleteUser(@Param('id') id: string) {
-    return this.usersService.remove(+id);
+  @Delete('delete/:id')
+  async deleteUser(@Param('id') id: string): Promise<string> {
+    await this.usersService.remove(+id);
+    return `User with id: ${id} successful deleted`;
   }
 
   @Get()
@@ -108,7 +100,7 @@ export class UsersController {
     @Query('page') page: number = 1,
     @Query('limit') limit: number = 10,
   ): Promise<{
-    data: UserResponseDto[];
+    data: ResponseUserDto[];
     count: number;
   }> {
     const users = await this.usersService.findAll(page, limit);
@@ -125,12 +117,12 @@ export class UsersController {
     }
 
     res.set({
-      'Content-Type': user.photoMimeType || 'image/jpeg',
+      'Content-Type': user.photoMimeType || 'image/jpg',
       'Content-Disposition': `attachment; filename="user-${id}-photo.jpg"`,
       'Content-Length': user.photo.length,
     });
 
-    res.end(user.photo); // Отправляем Buffer напрямую
+    res.end(user.photo);
   }
 
   //todo: добавить проверку
@@ -141,7 +133,7 @@ export class UsersController {
         destination: './src/uploads/temp',
         filename: (req, file, cb) => {
           const ext = path.extname(file.originalname);
-          const uniqueName = `temp_${Date.now()}_${Math.random().toString(36).slice(2)}_${ext}`;
+          const uniqueName = `temp_${Date.now()}_${Math.random().toString(36).slice(2)}${ext}`;
           cb(null, uniqueName);
         },
       }),

@@ -34,10 +34,4 @@ export class User {
 
   @Column({ name: 'photo_mime_type', length: 30, nullable: true })
   photoMimeType: string;
-
-  @CreateDateColumn({ name: 'created_at', type: 'timestamptz' })
-  createdAt: Date;
-
-  @UpdateDateColumn({ name: 'updated_at', type: 'timestamptz' })
-  updatedAt: Date;
 }

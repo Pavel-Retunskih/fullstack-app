@@ -1,5 +1,6 @@
 import {SubmitHandler, useForm} from "react-hook-form";
-import {useCreateUserMutation} from "../api/createUserApi.ts";
+import {useCreateUserMutation} from "../../../entities/user/api/userApi.ts";
+
 
 type Inputs = {
   firstName: string,

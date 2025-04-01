@@ -1,10 +1,15 @@
 CREATE DATABASE postgres;
 
-CREATE TABLE IF NOT EXISTS users
-                (
-                    id bigint NOT NULL GENERATED ALWAYS AS IDENTITY ( INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 9223372036854775807 CACHE 1 ),
-                    first_name character varying(100) NOT NULL,
-					last_name character varying(100) NOT NULL,
-                    photo bytea,
-					CONSTRAINT users_pkey PRIMARY KEY (id)
-                )
+CREATE TABLE IF NOT EXISTS users (
+    id BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY ( INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 9223372036854775807 CACHE 1 ),
+    first_name VARCHAR(100) NOT NULL,
+    last_name VARCHAR(100) NOT NULL,
+    height INT NOT NULL,
+    weight NUMERIC(5,2) NOT NULL,
+    gender VARCHAR(10) NOT NULL CHECK (gender IN ('male', 'female')),
+    residence VARCHAR(100) NOT NULL,
+    photo BYTEA,
+    photo_mime_type VARCHAR(30),
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_at TIMESTAMPTZ DEFAULT NOW()
+    );

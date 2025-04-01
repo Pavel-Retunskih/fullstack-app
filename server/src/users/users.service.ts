@@ -2,8 +2,9 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from './entities/user.entity';
-import { createUserDto } from './dto/create-user.dto';
-import { updateUserDTO } from './dto/update-user.dto';
+import { RegistrationUserDto } from './dto/registration-user.dto';
+import { UpdateUserDTO } from './dto/update-user.dto';
+import { CreateUserDto } from './dto/create-user.dto';
 
 @Injectable()
 export class UsersService {
@@ -34,7 +35,6 @@ export class UsersService {
     }
 
     if (user.photo && !(user.photo instanceof Buffer)) {
-      // Если photo - это объект { type: "Buffer", data: number[] }
       if (typeof user.photo === 'object' && 'data' in user.photo) {
         user.photo = Buffer.from((user.photo as any).data);
       }
@@ -42,12 +42,12 @@ export class UsersService {
     return user;
   }
 
-  async create(createUserDto: createUserDto): Promise<User> {
-    const user = this.usersRepository.create(createUserDto);
+  async create(createUser: CreateUserDto): Promise<User> {
+    const user = this.usersRepository.create(createUser);
     return await this.usersRepository.save(user);
   }
 
-  async update(id: number, updateUserDto: updateUserDTO): Promise<User> {
+  async update(id: number, updateUserDto: UpdateUserDTO): Promise<User> {
     const user = await this.usersRepository.findOne({
       where: { id },
     });
