@@ -12,7 +12,8 @@ import {
   BadRequestException,
   Res,
   NotFoundException,
-  HttpStatus,
+  UsePipes,
+  ValidationPipe,
 } from '@nestjs/common';
 import { Response } from 'express';
 import { UsersService } from './users.service';
@@ -22,11 +23,32 @@ import { UpdateUserDTO } from './dto/update-user.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import * as fs from 'fs/promises';
-import mime from 'mime-types';
 import * as path from 'node:path';
 import { ResponseUserDto } from './dto/responce-user.dto';
 
 @Controller('users')
+@UsePipes(
+  new ValidationPipe({
+    exceptionFactory: (errors) => {
+      const formattedErrors = errors.reduce<
+        Array<{ field: string; message: string }>
+      >((acc, curr) => {
+        acc.push({
+          field: curr.property,
+          message: curr.constraints
+            ? Object.values(curr.constraints).join(', ')
+            : '',
+        });
+        return acc;
+      }, []);
+
+      return new BadRequestException({
+        message: 'Some field is empty or invalid',
+        errors: formattedErrors,
+      });
+    },
+  }),
+)
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
@@ -55,14 +77,13 @@ export class UsersController {
     @Query('tempPhotoId') tempPhotoId: string | null,
   ): Promise<ResponseUserDto> {
     let photoData: Buffer;
-    let photoMimeType: string;
     if (tempPhotoId && tempPhotoId !== 'null' && tempPhotoId !== 'undefined') {
       const tempPhotoPath = path.join('./src/uploads/temp', tempPhotoId);
       try {
         photoData = await fs.readFile(tempPhotoPath);
         await fs.unlink(tempPhotoPath);
       } catch (err) {
-        throw new BadRequestException('Temp photo not found or expired');
+        throw new BadRequestException('Temp photo not found or expired', err);
       }
     } else {
       try {
@@ -72,7 +93,7 @@ export class UsersController {
         );
         photoData = await fs.readFile(defaultPhotoPath);
       } catch (err) {
-        throw new BadRequestException('Default photo not found');
+        throw new BadRequestException('Default photo not found', err);
       }
     }
 
@@ -139,7 +160,7 @@ export class UsersController {
       }),
     }),
   )
-  async uploadTempPhoto(@UploadedFile() photo: Express.Multer.File) {
+  uploadTempPhoto(@UploadedFile() photo: Express.Multer.File) {
     return {
       tempPhotoId: photo.filename,
     };
