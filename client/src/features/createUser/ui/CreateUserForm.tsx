@@ -12,7 +12,7 @@ export function CreateUserForm({tempPhotoId, getGender}: {
   getGender: (gender: 'male' | 'female') => void
 }) {
   const [registerUser] = useCreateUserMutation()
-  const {register, handleSubmit, control, setError, reset, formState: {isValid}} = useForm<CreateUserSchema>({
+  const {register, handleSubmit, control, setError, formState: {isValid}} = useForm<CreateUserSchema>({
     mode: 'onChange',
     reValidateMode: 'onChange',
     resolver: zodResolver(CreateUser)
@@ -30,7 +30,7 @@ export function CreateUserForm({tempPhotoId, getGender}: {
       registerUser({...data, tempPhotoId})
           .unwrap()
           .then(() => {
-            reset()
+
           })
           .catch((err: ErrorResponse<Array<{ field: keyof z.infer<typeof CreateUser>, message: string }>>) => {
             console.log(err)

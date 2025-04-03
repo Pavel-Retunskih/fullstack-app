@@ -111,9 +111,11 @@ export class UsersController {
   }
 
   @Delete('delete/:id')
-  async deleteUser(@Param('id') id: string): Promise<string> {
+  async deleteUser(@Param('id') id: string): Promise<{ message: string }> {
     await this.usersService.remove(+id);
-    return `User with id: ${id} successful deleted`;
+    return {
+      message: `User with id: ${id} successfully deleted`,
+    };
   }
 
   @Get()

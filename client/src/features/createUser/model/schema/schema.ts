@@ -9,4 +9,7 @@ export const CreateUser = z.object({
   residence: z.string()
 })
 
+export const UpdateUser = CreateUser.partial()
+
 export type CreateUserSchema = z.infer<typeof CreateUser>
+export type UpdateUserSchema = z.infer<typeof UpdateUser>
