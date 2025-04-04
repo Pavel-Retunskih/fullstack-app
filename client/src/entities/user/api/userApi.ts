@@ -10,7 +10,7 @@ export const userApi = createApi({
   }),
   tagTypes: ['Users'],
   endpoints: (build) => ({
-    createUser: build.mutation<any, QueryArgUserRequest>({
+    createUser: build.mutation<User, QueryArgUserRequest>({
       query: ({gender, height, firstName, lastName, weight, residence, tempPhotoId}) => ({
         url: `users/create?tempPhotoId=${tempPhotoId}`,
         method: 'POST',
@@ -39,7 +39,8 @@ export const userApi = createApi({
     getUserById: build.query<User, { id: string }>({
       query: ({id}) => ({
         url: `users/${id}`
-      })
+      }),
+      providesTags: ['Users']
     }),
     updateUserById: build.mutation<User, { id: string, updateUser: Partial<User> }>({
       query: ({id, updateUser}) => ({
