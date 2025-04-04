@@ -17,7 +17,6 @@ export function CreateUserForm({tempPhotoId, getGender}: {
     reValidateMode: 'onChange',
     resolver: zodResolver(CreateUser)
   });
-  console.log(isValid)
   const onChangeGender = (gender: string) => {
     if (gender === 'male' || gender === 'female') {
       getGender(gender)

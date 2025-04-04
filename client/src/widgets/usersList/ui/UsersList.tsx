@@ -6,10 +6,8 @@ import {useGetUsersQuery} from "../../../entities/user/api/userApi.ts";
 
 export function UsersList() {
   const [page, setPage] = useState(1);
-  console.log(page);
   const [limit, setLimit] = useState(5);
   const {data, isSuccess, isFetching} = useGetUsersQuery({page, limit})
-  console.log(data)
   return <div>
     <div className={'flex flex-col gap-4'}>
       {isSuccess && data.data.map((user: User) => (

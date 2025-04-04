@@ -10,7 +10,6 @@ export function UserPage() {
   const {data: user, isSuccess} = useGetUserByIdQuery({id: id!})
 
   const [isEditMode, setIsEditMode] = useState<boolean>(false);
-  console.log(user)
   if (!id) {
     return <div>User not found</div>;
   }

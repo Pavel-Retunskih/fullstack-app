@@ -26,7 +26,7 @@ export function UploadPhotoForm({callback, gender}: {
 
     const formData = new FormData();
     formData.append('photo', data.photo[0]);
-    console.log(data)
+
 
     try {
       await uploadPhoto(formData).unwrap();

@@ -134,7 +134,6 @@ export class UsersController {
   @Get(':id/photo')
   async getUserPhoto(@Param('id') id: string, @Res() res: Response) {
     const user = await this.usersService.findOne(+id);
-    console.log(user);
     if (!user.photo) {
       throw new NotFoundException('Photo not found');
     }
@@ -148,7 +147,6 @@ export class UsersController {
     res.end(user.photo);
   }
 
-  //todo: добавить проверку
   @Post('upload-temp-photo')
   @UseInterceptors(
     FileInterceptor('photo', {
